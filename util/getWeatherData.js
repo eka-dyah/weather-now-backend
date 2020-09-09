@@ -3,6 +3,7 @@ const modifiedCurrentData = require("./additional/modifiedCurrentData.js");
 const modifiedHourlyData = require("./additional/modifiedHourlyData.js");
 const modifiedDailyData = require("./additional/modifiedDailyData.js");
 const HttpError = require("../models/http-error.js");
+const modifiedTomorrowData = require("./additional/modifiedTomorrowData.js");
 const { url, key } = require("../config.js").openWeather;
 
 const getWeatherData = async (latitude, longitude, next) => {
@@ -58,6 +59,11 @@ const getWeatherData = async (latitude, longitude, next) => {
 		}
 	}
 
+	current.data.tomorrow = current.data.hourly.filter(
+		(time) =>
+			time.dt > atTwentyThreeHourFixedTimeZone.valueOf() / 1000
+	);
+
 	current.data.hourly = current.data.hourly.filter(
 		(time) =>
 			time.dt >= atZeroHourFixedTimeZone.valueOf() / 1000 &&
@@ -72,6 +78,10 @@ const getWeatherData = async (latitude, longitude, next) => {
 		current.data.hourly,
 		current.data.timezone_offset
 	);
+	const tomorrowNew = modifiedTomorrowData(
+		current.data.tomorrow,
+		current.data.timezone_offset
+	);
 	const dailyNew = modifiedDailyData(
 		current.data.daily,
 		current.data.timezone_offset
@@ -81,6 +91,7 @@ const getWeatherData = async (latitude, longitude, next) => {
 		...current.data,
 		current: currentNew,
 		hourly: hourlyNew,
+		tomorrow: tomorrowNew,
 		daily: dailyNew,
 	};
 
