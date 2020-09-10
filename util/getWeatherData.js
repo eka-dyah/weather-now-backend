@@ -35,6 +35,33 @@ const getWeatherData = async (latitude, longitude, next) => {
 		atTwentyThreeHourUTC.valueOf() - current.data.timezone_offset * 1000
 	);
 
+	const atTwentyThreeHoursTomorrowFixed = new Date(
+		atTwentyThreeHourFixedTimeZone
+	);
+	atTwentyThreeHoursTomorrowFixed.setDate(
+		atTwentyThreeHoursTomorrowFixed.getDate() + 1
+	);
+
+	if (current.data.timezone_offset > 0) {
+		let extended;
+
+		try {
+			extended = await Axios.get(
+				`${url}onecall/timemachine?${key}&lat=${latitude}&lon=${longitude}&units=metric&dt=${
+					atZeroHourUTC.valueOf() / 1000
+				}`
+			);
+		} catch (error) {
+			console.log("error", error);
+		}
+
+		if (Object.entries(extended.data).length === 0) {
+			extended.data = [{ error: "An error has occured" }];
+		} else {
+			current.data.hourly.unshift(...extended.data.hourly);
+		}
+	}
+
 	if (
 		!current.data.hourly.some(
 			(time) => time.dt === atZeroHourFixedTimeZone.valueOf() / 1000
@@ -61,14 +88,25 @@ const getWeatherData = async (latitude, longitude, next) => {
 
 	current.data.tomorrow = current.data.hourly.filter(
 		(time) =>
-			time.dt > atTwentyThreeHourFixedTimeZone.valueOf() / 1000
+			time.dt > atTwentyThreeHourFixedTimeZone.valueOf() / 1000 &&
+			time.dt <= atTwentyThreeHoursTomorrowFixed.valueOf() / 1000
 	);
 
-	current.data.hourly = current.data.hourly.filter(
-		(time) =>
+	current.data.hourly = current.data.hourly.filter((time, index) => {
+		let before;
+		if (index - 1 >= 0) {
+			before = time.dt !== current.data.hourly[index - 1].dt;
+			return (
+				time.dt >= atZeroHourFixedTimeZone.valueOf() / 1000 &&
+				time.dt <= atTwentyThreeHourFixedTimeZone.valueOf() / 1000 &&
+				before
+			);
+		}
+		return (
 			time.dt >= atZeroHourFixedTimeZone.valueOf() / 1000 &&
 			time.dt <= atTwentyThreeHourFixedTimeZone.valueOf() / 1000
-	);
+		);
+	});
 
 	const currentNew = modifiedCurrentData(
 		current.data.current,
