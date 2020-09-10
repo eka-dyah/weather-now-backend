@@ -11,7 +11,7 @@ const optionsFormatTime = (hour12 = true) => {
 
 const optionsFormatDate = {
 	day: "numeric",
-	weekday: "long",
+	weekday: "short",
 	month: "short",
 	year: "numeric",
 };
