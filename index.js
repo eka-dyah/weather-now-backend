@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 
 app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000, weathernow-app.web.app, weathernow-app.firebaseapp.com");
+	res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000, http://localhost:5000, weathernow-app.web.app, weathernow-app.firebaseapp.com");
 	res.setHeader("Access-Control-Allow-Credentials", true);
 	res.setHeader(
 		"Access-Control-Allow-Headers",
