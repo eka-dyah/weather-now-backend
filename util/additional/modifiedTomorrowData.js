@@ -18,7 +18,7 @@ const modifiedTomorrowData = (tomorrow, timezoneOffset) => {
 			time24: time.toLocaleString("en-US", optionsFormatTime(false)),
 			weather: {
 				...data.weather[0],
-				icon: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+				icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
 			},
 			info: [
 				{

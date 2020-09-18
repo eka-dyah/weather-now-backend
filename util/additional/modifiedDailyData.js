@@ -26,7 +26,7 @@ const modifiedDailyData = (daily, timezoneOffset) => {
 			),
 			weather: {
 				...data.weather[0],
-				icon: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+				icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
 			},
 			info: [
 				{

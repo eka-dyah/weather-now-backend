@@ -32,7 +32,7 @@ const modifiedCurrentData = (current, timezoneOffset) => {
 		dt: current.dt,
 		weather: {
 			...current.weather[0],
-			icon: `http://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`,
+			icon: `https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`,
 		},
 		info: [
 			{
